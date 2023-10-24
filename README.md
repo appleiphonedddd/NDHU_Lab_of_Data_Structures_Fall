@@ -1,4 +1,4 @@
-# NDHU_Lab_of_Data_Structures_2023 README
+# NDHU_Lab_of_Data_Structures_2023
 
 ---
 
