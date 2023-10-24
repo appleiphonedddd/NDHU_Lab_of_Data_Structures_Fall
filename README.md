@@ -13,7 +13,7 @@ This project belongs to the 2023 Data Structures Lab at National Dong Hwa Univer
 ## Build Setup (Local)
 1. Clone this repository to your local machine:
 ```bash
-https://github.com/appleiphonedddd/NDHU_Lab_of_Data_Structures_2023.git
+git clone https://github.com/appleiphonedddd/NDHU_Lab_of_Data_Structures_2023.git
 ```
 
 ## Change directory to the project folder
