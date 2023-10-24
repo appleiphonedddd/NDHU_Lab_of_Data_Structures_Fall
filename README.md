@@ -9,15 +9,14 @@ This project belongs to the 2023 Data Structures Lab at National Dong Hwa Univer
 - c++ 20
 - gcc 11.4
 
-
-## .env Setting
-Please ensure you've filled out the required fields prior to execution.
-
 ## Build Setup (Local)
 1. Clone this repository to your local machine:
 ```bash
 git clone https://github.com/[YourUsername]/NDHU_Lab_of_Data_Structures_2023.git
+'''
+## Build Setup (Local)
 
+'''bash
 cd NDHU_Lab_of_Data_Structures_2023
 
 #Support
