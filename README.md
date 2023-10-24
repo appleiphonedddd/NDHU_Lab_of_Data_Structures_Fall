@@ -16,12 +16,12 @@ This project belongs to the 2023 Data Structures Lab at National Dong Hwa Univer
 git clone https://github.com/appleiphonedddd/NDHU_Lab_of_Data_Structures_2023.git
 ```
 
-## Change directory to the project folder
+2. Change directory to the project folder
 ```bash
 cd NDHU_Lab_of_Data_Structures_2023
 ```
 
-## Elevate shell script privileges and Compile c source code
+3. Elevate shell script privileges and Compile c source code
 ```bash
 chmod 777 c.sh
 ./c.sh
