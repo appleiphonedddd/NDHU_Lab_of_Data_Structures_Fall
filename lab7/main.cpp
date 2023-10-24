@@ -138,10 +138,6 @@ public:
     This function will find a path between start point and finish point.
     Return a list content the path information inside.
     If there is no path between two point then the list will be empty.
-
-    這個函數會找到起點到終點間的一條路徑
-    回傳一個 list 包含著路徑的資訊
-    如果找不到路徑的話 list 就會是空的
     */
     List *getPath()
     {
