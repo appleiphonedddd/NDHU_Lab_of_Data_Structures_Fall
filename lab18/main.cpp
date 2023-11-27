@@ -147,13 +147,12 @@ public:
 int main()
 {
     AVLTree<int> tree;
+    srand(0);
 
-    tree.insert(10);
-    tree.insert(20);
-    tree.insert(30);
-    tree.insert(40);
-    tree.insert(50);
-    tree.insert(25);
-
-    std::cout << "Inorder traversal of the constructed AVL tree is \n";
+    for (int j = 0; j < 20; j++)
+    {
+        tree.insert(rand() % 100);
+        tree.inorderTraversal();
+        std::cout << std::endl; // For better readability
+    }
 }

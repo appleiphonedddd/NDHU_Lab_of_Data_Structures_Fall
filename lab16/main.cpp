@@ -1,58 +1,414 @@
-#include <iostream>
-#include <string>
-using namespace std;
+// Implementing Red-Black Tree in C++
 
-enum Color
-{
-    RED,
-    BLACK
-};
+#include <iostream>
+using namespace std;
 
 struct Node
 {
-    string data;
-    bool color;
+    int data;
+    Node *parent;
     Node *left;
     Node *right;
-    Node *parent;
-
-    Node(string data)
-    {
-        this->data = data;
-        color = RED;
-        left = right = parent = NULL;
-    }
+    int color;
 };
+
+typedef Node *NodePtr;
 
 class RedBlackTree
 {
 private:
-    Node *root;
+    NodePtr root;
+    NodePtr TNULL;
 
-    Node *minValueNode(Node *node)
+    void initializeNULLNode(NodePtr node, NodePtr parent)
     {
-        Node *current = node;
+        node->data = 0;
+        node->parent = parent;
+        node->left = nullptr;
+        node->right = nullptr;
+        node->color = 0;
+    }
 
-        while (current && current->left != NULL)
+    // Preorder
+    void preOrderHelper(NodePtr node)
+    {
+        if (node != TNULL)
         {
-            current = current->left;
+            cout << node->data << " ";
+            preOrderHelper(node->left);
+            preOrderHelper(node->right);
+        }
+    }
+
+    // Inorder
+    void inOrderHelper(NodePtr node)
+    {
+        if (node != TNULL)
+        {
+            inOrderHelper(node->left);
+            cout << node->data << " ";
+            inOrderHelper(node->right);
+        }
+    }
+
+    // Post order
+    void postOrderHelper(NodePtr node)
+    {
+        if (node != TNULL)
+        {
+            postOrderHelper(node->left);
+            postOrderHelper(node->right);
+            cout << node->data << " ";
+        }
+    }
+
+    NodePtr searchTreeHelper(NodePtr node, int key)
+    {
+        if (node == TNULL || key == node->data)
+        {
+            return node;
         }
 
-        return current;
+        if (key < node->data)
+        {
+            return searchTreeHelper(node->left, key);
+        }
+        return searchTreeHelper(node->right, key);
     }
-    void leftRotate(Node *x)
-    {
-        Node *y = x->right;
-        x->right = y->left;
 
-        if (y->left != NULL)
+    // For balancing the tree after deletion
+    void deleteFix(NodePtr x)
+    {
+        NodePtr s;
+        while (x != root && x->color == 0)
+        {
+            if (x == x->parent->left)
+            {
+                s = x->parent->right;
+                if (s->color == 1)
+                {
+                    s->color = 0;
+                    x->parent->color = 1;
+                    leftRotate(x->parent);
+                    s = x->parent->right;
+                }
+
+                if (s->left->color == 0 && s->right->color == 0)
+                {
+                    s->color = 1;
+                    x = x->parent;
+                }
+                else
+                {
+                    if (s->right->color == 0)
+                    {
+                        s->left->color = 0;
+                        s->color = 1;
+                        rightRotate(s);
+                        s = x->parent->right;
+                    }
+
+                    s->color = x->parent->color;
+                    x->parent->color = 0;
+                    s->right->color = 0;
+                    leftRotate(x->parent);
+                    x = root;
+                }
+            }
+            else
+            {
+                s = x->parent->left;
+                if (s->color == 1)
+                {
+                    s->color = 0;
+                    x->parent->color = 1;
+                    rightRotate(x->parent);
+                    s = x->parent->left;
+                }
+
+                if (s->right->color == 0 && s->right->color == 0)
+                {
+                    s->color = 1;
+                    x = x->parent;
+                }
+                else
+                {
+                    if (s->left->color == 0)
+                    {
+                        s->right->color = 0;
+                        s->color = 1;
+                        leftRotate(s);
+                        s = x->parent->left;
+                    }
+
+                    s->color = x->parent->color;
+                    x->parent->color = 0;
+                    s->left->color = 0;
+                    rightRotate(x->parent);
+                    x = root;
+                }
+            }
+        }
+        x->color = 0;
+    }
+
+    void rbTransplant(NodePtr u, NodePtr v)
+    {
+        if (u->parent == nullptr)
+        {
+            root = v;
+        }
+        else if (u == u->parent->left)
+        {
+            u->parent->left = v;
+        }
+        else
+        {
+            u->parent->right = v;
+        }
+        v->parent = u->parent;
+    }
+
+    void deleteNodeHelper(NodePtr node, int key)
+    {
+        NodePtr z = TNULL;
+        NodePtr x, y;
+        while (node != TNULL)
+        {
+            if (node->data == key)
+            {
+                z = node;
+            }
+
+            if (node->data <= key)
+            {
+                node = node->right;
+            }
+            else
+            {
+                node = node->left;
+            }
+        }
+
+        if (z == TNULL)
+        {
+            cout << "Key not found in the tree" << endl;
+            return;
+        }
+
+        y = z;
+        int y_original_color = y->color;
+        if (z->left == TNULL)
+        {
+            x = z->right;
+            rbTransplant(z, z->right);
+        }
+        else if (z->right == TNULL)
+        {
+            x = z->left;
+            rbTransplant(z, z->left);
+        }
+        else
+        {
+            y = minimum(z->right);
+            y_original_color = y->color;
+            x = y->right;
+            if (y->parent == z)
+            {
+                x->parent = y;
+            }
+            else
+            {
+                rbTransplant(y, y->right);
+                y->right = z->right;
+                y->right->parent = y;
+            }
+
+            rbTransplant(z, y);
+            y->left = z->left;
+            y->left->parent = y;
+            y->color = z->color;
+        }
+        delete z;
+        if (y_original_color == 0)
+        {
+            deleteFix(x);
+        }
+    }
+
+    // For balancing the tree after insertion
+    void insertFix(NodePtr k)
+    {
+        NodePtr u;
+        while (k->parent->color == 1)
+        {
+            if (k->parent == k->parent->parent->right)
+            {
+                u = k->parent->parent->left;
+                if (u->color == 1)
+                {
+                    u->color = 0;
+                    k->parent->color = 0;
+                    k->parent->parent->color = 1;
+                    k = k->parent->parent;
+                }
+                else
+                {
+                    if (k == k->parent->left)
+                    {
+                        k = k->parent;
+                        rightRotate(k);
+                    }
+                    k->parent->color = 0;
+                    k->parent->parent->color = 1;
+                    leftRotate(k->parent->parent);
+                }
+            }
+            else
+            {
+                u = k->parent->parent->right;
+
+                if (u->color == 1)
+                {
+                    u->color = 0;
+                    k->parent->color = 0;
+                    k->parent->parent->color = 1;
+                    k = k->parent->parent;
+                }
+                else
+                {
+                    if (k == k->parent->right)
+                    {
+                        k = k->parent;
+                        leftRotate(k);
+                    }
+                    k->parent->color = 0;
+                    k->parent->parent->color = 1;
+                    rightRotate(k->parent->parent);
+                }
+            }
+            if (k == root)
+            {
+                break;
+            }
+        }
+        root->color = 0;
+    }
+
+    void printHelper(NodePtr root, string indent, bool last)
+    {
+        if (root != TNULL)
+        {
+            cout << indent;
+            if (last)
+            {
+                cout << "R----";
+                indent += "   ";
+            }
+            else
+            {
+                cout << "L----";
+                indent += "|  ";
+            }
+
+            string sColor = root->color ? "RED" : "BLACK";
+            cout << root->data << "(" << sColor << ")" << endl;
+            printHelper(root->left, indent, false);
+            printHelper(root->right, indent, true);
+        }
+    }
+
+public:
+    RedBlackTree()
+    {
+        TNULL = new Node;
+        TNULL->color = 0;
+        TNULL->left = nullptr;
+        TNULL->right = nullptr;
+        root = TNULL;
+    }
+
+    void preorder()
+    {
+        preOrderHelper(this->root);
+    }
+
+    void inorder()
+    {
+        inOrderHelper(this->root);
+    }
+
+    void postorder()
+    {
+        postOrderHelper(this->root);
+    }
+
+    NodePtr searchTree(int k)
+    {
+        return searchTreeHelper(this->root, k);
+    }
+
+    NodePtr minimum(NodePtr node)
+    {
+        while (node->left != TNULL)
+        {
+            node = node->left;
+        }
+        return node;
+    }
+
+    NodePtr maximum(NodePtr node)
+    {
+        while (node->right != TNULL)
+        {
+            node = node->right;
+        }
+        return node;
+    }
+
+    NodePtr successor(NodePtr x)
+    {
+        if (x->right != TNULL)
+        {
+            return minimum(x->right);
+        }
+
+        NodePtr y = x->parent;
+        while (y != TNULL && x == y->right)
+        {
+            x = y;
+            y = y->parent;
+        }
+        return y;
+    }
+
+    NodePtr predecessor(NodePtr x)
+    {
+        if (x->left != TNULL)
+        {
+            return maximum(x->left);
+        }
+
+        NodePtr y = x->parent;
+        while (y != TNULL && x == y->left)
+        {
+            x = y;
+            y = y->parent;
+        }
+
+        return y;
+    }
+
+    void leftRotate(NodePtr x)
+    {
+        NodePtr y = x->right;
+        x->right = y->left;
+        if (y->left != TNULL)
         {
             y->left->parent = x;
         }
-
         y->parent = x->parent;
-
-        if (x->parent == NULL)
+        if (x->parent == nullptr)
         {
             this->root = y;
         }
@@ -64,24 +420,20 @@ private:
         {
             x->parent->right = y;
         }
-
         y->left = x;
         x->parent = y;
     }
 
-    void rightRotate(Node *x)
+    void rightRotate(NodePtr x)
     {
-        Node *y = x->left;
+        NodePtr y = x->left;
         x->left = y->right;
-
-        if (y->right != NULL)
+        if (y->right != TNULL)
         {
             y->right->parent = x;
         }
-
         y->parent = x->parent;
-
-        if (x->parent == NULL)
+        if (x->parent == nullptr)
         {
             this->root = y;
         }
@@ -93,117 +445,27 @@ private:
         {
             x->parent->left = y;
         }
-
         y->right = x;
         x->parent = y;
     }
 
-    void insertFixup(Node *z)
+    // Inserting a node
+    void insert(int key)
     {
-        while (z->parent != NULL && z->parent->color == RED)
-        {
-            if (z->parent == z->parent->parent->left)
-            {
-                Node *y = z->parent->parent->right;
-                if (y != NULL && y->color == RED)
-                {
-                    z->parent->color = BLACK;
-                    y->color = BLACK;
-                    z->parent->parent->color = RED;
-                    z = z->parent->parent;
-                }
-                else
-                {
-                    if (z == z->parent->right)
-                    {
-                        z = z->parent;
-                        leftRotate(z);
-                    }
-                    z->parent->color = BLACK;
-                    z->parent->parent->color = RED;
-                    rightRotate(z->parent->parent);
-                }
-            }
-            else
-            {
-                // Same as above with right/left exchanged
-            }
-        }
-        this->root->color = BLACK;
-    }
+        NodePtr node = new Node;
+        node->parent = nullptr;
+        node->data = key;
+        node->left = TNULL;
+        node->right = TNULL;
+        node->color = 1;
 
-    void deleteFixup(Node *x)
-    {
-        while (x != this->root && x->color == BLACK)
-        {
-            if (x == x->parent->left)
-            {
-                Node *w = x->parent->right;
-                if (w->color == RED)
-                {
-                    w->color = BLACK;
-                    x->parent->color = RED;
-                    leftRotate(x->parent);
-                    w = x->parent->right;
-                }
+        NodePtr y = nullptr;
+        NodePtr x = this->root;
 
-                if (w->left->color == BLACK && w->right->color == BLACK)
-                {
-                    w->color = RED;
-                    x = x->parent;
-                }
-                else
-                {
-                    if (w->right->color == BLACK)
-                    {
-                        w->left->color = BLACK;
-                        w->color = RED;
-                        rightRotate(w);
-                        w = x->parent->right;
-                    }
-                    w->color = x->parent->color;
-                    x->parent->color = BLACK;
-                    w->right->color = BLACK;
-                    leftRotate(x->parent);
-                    x = this->root;
-                }
-            }
-            else
-            {
-                // Same as above with right/left exchanged
-            }
-        }
-        x->color = BLACK;
-    }
-
-    string serialize(Node *root)
-    {
-        if (root == NULL)
-        {
-            return "";
-        }
-        string s = serialize(root->left);
-        s += root->data + ",";
-        s += serialize(root->right);
-        return s;
-    }
-
-public:
-    RedBlackTree()
-    {
-        root = NULL;
-    }
-
-    void insert(string data)
-    {
-        Node *z = new Node(data);
-        Node *y = NULL;
-        Node *x = this->root;
-
-        while (x != NULL)
+        while (x != TNULL)
         {
             y = x;
-            if (z->data < x->data)
+            if (node->data < x->data)
             {
                 x = x->left;
             }
@@ -213,115 +475,66 @@ public:
             }
         }
 
-        z->parent = y;
-        if (y == NULL)
+        node->parent = y;
+        if (y == nullptr)
         {
-            this->root = z;
+            root = node;
         }
-        else if (z->data < y->data)
+        else if (node->data < y->data)
         {
-            y->left = z;
-        }
-        else
-        {
-            y->right = z;
-        }
-
-        z->left = z->right = NULL;
-        z->color = RED;
-        insertFixup(z);
-    }
-
-    void deleteNode(string data)
-    {
-        deleteUtil(this->root, data);
-    }
-
-    Node *deleteUtil(Node *root, string data)
-    {
-        if (root == NULL)
-            return root;
-
-        if (data < root->data)
-        {
-            root->left = deleteUtil(root->left, data);
-        }
-        else if (data > root->data)
-        {
-            root->right = deleteUtil(root->right, data);
+            y->left = node;
         }
         else
         {
-            if (root->left == NULL || root->right == NULL)
-            {
-                Node *temp = root->left ? root->left : root->right;
-
-                if (temp == NULL)
-                {
-                    temp = root;
-                    root = NULL;
-                }
-                else
-                {
-                    *root = *temp;
-                }
-
-                free(temp);
-            }
-            else
-            {
-                Node *temp = minValueNode(root->right);
-                /* Node *minValueNode(Node * node)
-                 {
-                     Node *current = node;
-
-                     while (current->left != NULL)
-                     {
-                         current = current->left;
-                     }
-
-                     return current;
-                 }*/
-                root->data = temp->data;
-                root->right = deleteUtil(root->right, temp->data);
-                
-
-            }
+            y->right = node;
         }
 
-        if (root != NULL)
+        if (node->parent == nullptr)
         {
-            deleteFixup(root);
+            node->color = 0;
+            return;
         }
 
-        return root;
+        if (node->parent->parent == nullptr)
+        {
+            return;
+        }
+
+        insertFix(node);
     }
 
-    string serialize()
+    NodePtr getRoot()
     {
-        return serialize(root);
+        return this->root;
+    }
+
+    void deleteNode(int data)
+    {
+        deleteNodeHelper(this->root, data);
+    }
+
+    void printTree()
+    {
+        if (root)
+        {
+            printHelper(this->root, "", true);
+        }
     }
 };
 
 int main()
 {
-    RedBlackTree tree;
-    string input;
-    while (cin >> input)
-    {
-        if (input == "insert")
-        {
-            string data;
-            cin >> data;
-            tree.insert(data);
-        }
-        else if (input == "delete")
-        {
-            string data;
-            cin >> data;
-            tree.deleteNode(data);
-        }
-        cout << tree.serialize() << "\n";
-    }
-    return 0;
+    RedBlackTree bst;
+    bst.insert(55);
+    bst.insert(40);
+    bst.insert(65);
+    bst.insert(60);
+    bst.insert(75);
+    bst.insert(57);
+
+    bst.printTree();
+    cout << endl
+         << "After deleting" << endl;
+    bst.deleteNode(40);
+    bst.printTree();
 }
