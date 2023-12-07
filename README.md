@@ -27,9 +27,9 @@ Clone the repository to your local machine by running
 git clone https://github.com/appleiphonedddd/NDHU_Lab_of_Data_Structures_2023.git
 cd NDHU_Lab_of_Data_Structures_2023
 ```
-Elevate shell script privileges and Compile c source code
+Complie c code and execute it!
 
 ```shell!
-chmod 777 c.sh
-./c.sh
+g++ /file to main.cpp -o main -Wall
+main
 ```
