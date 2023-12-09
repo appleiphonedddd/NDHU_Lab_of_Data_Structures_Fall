@@ -3,6 +3,8 @@
 #include <stdexcept>
 #include <ctime>
 #include <cstdio>
+#include <queue>
+#include <stack>
 
 using namespace std;
 
@@ -142,6 +144,10 @@ public:
         node->setPrev(at);
         if (node->getNext() == NULL)
             tail = node;
+    }
+    bool isEmpty() const
+    {
+        return head == NULL;
     }
     ListNode<T> *removeFromHead()
     {
@@ -334,13 +340,56 @@ public:
         vertex->addFromTail(v);
         return v;
     }
+
     void BFS(WeightedGraphVertex<V, E> *v)
     {
-    }
-    void DFS(WeightedGraphVertex<V, E> *v)
-    {
+        LinkList<WeightedGraphVertex<V, E> *> *queue = new LinkList<WeightedGraphVertex<V, E> *>();
+        LinkList<WeightedGraphVertex<V, E> *> *visited = new LinkList<WeightedGraphVertex<V, E> *>();
+
+        queue->addFromTail(v);
+        visited->addFromTail(v);
+
+        while (!queue->isEmpty())
+        {
+            v = queue->removeFromHead()->getData();
+            cout << (*v) << " ";
+
+            for (int i = 0; (*v)[i] != NULL; i++)
+            {
+                WeightedGraphVertex<V, E> *u = (*v)[i]->getData()->getAnotherEnd(v);
+                if (!visited->exist(u))
+                {
+                    queue->addFromTail(u);
+                    visited->addFromTail(u);
+                }
+            }
+        }
     }
 
+    void DFS(WeightedGraphVertex<V, E> *v)
+    {
+        LinkList<WeightedGraphVertex<V, E> *> *stack = new LinkList<WeightedGraphVertex<V, E> *>();
+        LinkList<WeightedGraphVertex<V, E> *> *visited = new LinkList<WeightedGraphVertex<V, E> *>();
+
+        stack->addFromHead(v);
+        visited->addFromTail(v);
+
+        while (!stack->isEmpty())
+        {
+            v = stack->removeFromHead()->getData();
+            cout << (*v) << " ";
+
+            for (int i = 0; (*v)[i] != NULL; i++)
+            {
+                WeightedGraphVertex<V, E> *u = (*v)[i]->getData()->getAnotherEnd(v);
+                if (!visited->exist(u))
+                {
+                    stack->addFromHead(u);
+                    visited->addFromTail(u);
+                }
+            }
+        }
+    }
 private:
     LinkList<WeightedGraphVertex<V, E> *> *vertex;
     LinkList<WeightedGraphEdge<V, E> *> *edge;
@@ -362,23 +411,36 @@ bool operator>(pair<int, int> a, pair<int, int> b)
 
 int main()
 {
+
     WeightedGraph<char, int> *g = new WeightedGraph<char, int>();
     LinkList<WeightedGraphVertex<char, int> *> *node = new LinkList<WeightedGraphVertex<char, int> *>();
+
     int j, k, n, a, b, w;
     scanf("%d", &n);
     srand(n);
+
     for (j = 0; j < 26; j++)
+    {
         node->addFromTail(g->addVertex(j + 'A'));
+    }
+
     k = rand() % 100;
     for (j = 0; j < k; j++)
     {
         a = rand() % 26;
         b = rand() % 26;
         w = rand() % 100;
+
         g->addLink(((*node)[a]).getData(), ((*node)[b]).getData(), w);
     }
-    g->BFS((*node)[rand() % 26].getData());
+
+    WeightedGraphVertex<char, int> *bfsStart = (*node)['M' - 'A'].getData();
+    WeightedGraphVertex<char, int> *dfsStart = (*node)['P' - 'A'].getData();
+
+    g->BFS(bfsStart);
     cout << endl;
-    g->DFS((*node)[rand() % 26].getData());
+
+    g->DFS(dfsStart);
+
     return 0;
 }
