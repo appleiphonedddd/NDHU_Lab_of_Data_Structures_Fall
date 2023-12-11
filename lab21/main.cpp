@@ -345,7 +345,42 @@ public:
     */
     bool isForest()
     {
-        return true;
+        // Perform depth-first search (DFS) to count connected components
+        int connectedComponents = 0;
+        bool *visited = new bool[count];
+        for (int i = 0; i < count; i++)
+        {
+            visited[i] = false;
+        }
+
+        for (int i = 0; i < count; i++)
+        {
+            if (!visited[i])
+            {
+                // Start a new DFS traversal from unvisited nodes
+                DFS(i, visited);
+                connectedComponents++;
+            }
+        }
+
+        delete[] visited;
+
+        // If there is exactly one connected component, it's a forest
+        return connectedComponents == 1;
+    }
+
+    void DFS(int v, bool *visited)
+    {
+        visited[v] = true;
+
+        // Traverse all adjacent nodes
+        for (int i = 0; i < count; i++)
+        {
+            if (isLinked((*vertex)[v].getData(), (*vertex)[i].getData()) && !visited[i])
+            {
+                DFS(i, visited);
+            }
+        }
     }
 
 private:
