@@ -2,11 +2,6 @@
 #include <iostream>
 #include <stdexcept>
 #include <ctime>
-#include <cstdio>
-#include <queue>
-#include <stack>
-
-using namespace std;
 
 template <class T>
 class Node
@@ -145,10 +140,6 @@ public:
         if (node->getNext() == NULL)
             tail = node;
     }
-    bool isEmpty() const
-    {
-        return head == NULL;
-    }
     ListNode<T> *removeFromHead()
     {
         ListNode<T> *n = head;
@@ -248,7 +239,7 @@ class WeightedGraphVertex : public Node<V>
 public:
     WeightedGraphVertex() : Node<V>()
     {
-        list = new LinkList<WeightedGraphEdge<V, E> *>();
+        list = new LinkList<E>();
     }
     WeightedGraphVertex(V d) : Node<V>(d)
     {
@@ -338,112 +329,61 @@ public:
     {
         WeightedGraphVertex<V, E> *v = new WeightedGraphVertex<V, E>(d);
         vertex->addFromTail(v);
+        vertexCount++;
         return v;
     }
-
-    void BFS(WeightedGraphVertex<V, E> *v)
+    void adjList()
     {
-        LinkList<WeightedGraphVertex<V, E> *> *queue = new LinkList<WeightedGraphVertex<V, E> *>();
-        LinkList<WeightedGraphVertex<V, E> *> *visited = new LinkList<WeightedGraphVertex<V, E> *>();
-
-        queue->addFromTail(v);
-        //visited->addFromTail(v);
-
-        while (!queue->isEmpty())
+        ListNode<WeightedGraphVertex<V, E> *> *cur = &(*vertex)[0];
+        while (cur != NULL)
         {
-            //v = queue->removeFromHead()->getData();
-            //1. V appears in the queue at inizialization
-            //2. x1= queue[0] = M  x1 datatype?
-            //3. visited =?
-            cout << (*v) << " ";
-
-            for (int i = 0; visited.size() != NULL; i++)
+            WeightedGraphVertex<V, E> *temp = cur->getData();
+            std::cout << temp << ": ";
+            ListNode<WeightedGraphEdge<V, E> *> *e = (*temp)[0];
+            while (e != NULL)
             {
-                //WeightedGraphVertex<V, E> *u = (*v)[i]->getData()->getAnotherEnd(v);
-                if (!visited->exist(u))
-                {
-                    queue->addFromTail(u);
-                    visited->addFromTail(u);
-                }
+                std::cout << e->getData()->getAnotherEnd(temp) << "(" << e->getData() << ") ";
+                e = e->getNext();
             }
+            std::cout << std::endl;
+            cur = cur->getNext();
         }
     }
 
-    void DFS(WeightedGraphVertex<V, E> *v)
+    WeightedGraph *shortestPathTree(WeightedGraphVertex<V, E> *v)
     {
-        LinkList<WeightedGraphVertex<V, E> *> *stack = new LinkList<WeightedGraphVertex<V, E> *>();
-        LinkList<WeightedGraphVertex<V, E> *> *visited = new LinkList<WeightedGraphVertex<V, E> *>();
 
-        stack->addFromHead(v);
-        //visited->addFromTail(v);
-
-        while (!stack->isEmpty())
-        {
-            v = stack->removeFromHead()->getData();
-            cout << (*v) << " ";
-
-            for (int i = 0; (*v)[i] != NULL; i++)
-            {
-                WeightedGraphVertex<V, E> *u = (*v)[i]->getData()->getAnotherEnd(v);
-                if (!visited->exist(u))
-                {
-                    stack->addFromHead(u);
-                    visited->addFromTail(u);
-                }
-            }
-        }
+        /**
+         * return null if n is not a vertex in this graph
+         *return the minimum spanning tree with v as root
+         **/
     }
+
 private:
     LinkList<WeightedGraphVertex<V, E> *> *vertex;
     LinkList<WeightedGraphEdge<V, E> *> *edge;
+    int vertexCount, edgeCount;
 };
-
-bool operator>=(pair<int, int> a, pair<int, int> b)
-{
-    if (a.second >= b.second)
-        return true;
-    return false;
-}
-
-bool operator>(pair<int, int> a, pair<int, int> b)
-{
-    if (a.second > b.second)
-        return true;
-    return false;
-}
 
 int main()
 {
-
     WeightedGraph<char, int> *g = new WeightedGraph<char, int>();
-    LinkList<WeightedGraphVertex<char, int> *> *node = new LinkList<WeightedGraphVertex<char, int> *>();
-
-    int j, k, n, a, b, w;
-    scanf("%d", &n);
-    srand(n);
-
-    for (j = 0; j < 26; j++)
+    WeightedGraph<char, int> *tree;
+    int j, k, i, l;
+    srand(time(NULL));
+    for (j = 0; j < 5; j++)
     {
-        node->addFromTail(g->addVertex(j + 'A'));
+        g->addVertex(j + 'a');
     }
-
-    k = rand() % 100;
-    for (j = 0; j < k; j++)
+    for (j = 0; j < 5; j++)
     {
-        a = rand() % 26;
-        b = rand() % 26;
-        w = rand() % 100;
-
-        g->addLink(((*node)[a]).getData(), ((*node)[b]).getData(), w);
+        k = rand() % 5;
+        i = rand() % 5;
+        l = rand() % 100;
+        g->addLink((*g)[k], (*g)[i], l);
     }
-
-    WeightedGraphVertex<char, int> *bfsStart = (*node)['M' - 'A'].getData();
-    WeightedGraphVertex<char, int> *dfsStart = (*node)['P' - 'A'].getData();
-
-    g->BFS(bfsStart);
-    cout << endl;
-
-    g->DFS(dfsStart);
-
+    g->adjList();
+    tree = g->shortestPathTree((*g)[0]);
+    tree->adjList();
     return 0;
 }
