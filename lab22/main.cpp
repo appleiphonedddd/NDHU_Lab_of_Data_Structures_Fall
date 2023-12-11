@@ -2,6 +2,8 @@
 #include <iostream>
 #include <stdexcept>
 #include <ctime>
+#include <memory>
+#include <vector>
 
 template <class T>
 class Node
@@ -302,10 +304,10 @@ template <class V, class E>
 class WeightedGraph
 {
 public:
-    WeightedGraph()
+    WeightedGraph() : vertexCount(0), edgeCount(0)
     {
-        vertex = new LinkList<WeightedGraphVertex<V, E> *>();
-        edge = new LinkList<WeightedGraphEdge<V, E> *>();
+        vertex = std::make_unique<LinkList<WeightedGraphVertex<V, E> *>>();
+        edge = std::make_unique<LinkList<WeightedGraphEdge<V, E> *>>();
     }
     WeightedGraphVertex<V, E> *operator[](int n)
     {
@@ -353,13 +355,58 @@ public:
         return null if n is not a vertex in this graph
         return the minimum spanning tree with v as root
     */
-    WeightedGraph *minimumSpanningTree(WeightedGraphVertex<V, E> *v)
+    WeightedGraph<V, E> *minimumSpanningTree(WeightedGraphVertex<V, E> *v)
     {
+        // Create a new graph to represent the minimum spanning tree
+        WeightedGraph<V, E> *mst = new WeightedGraph<V, E>();
+
+        // Create a disjoint-set data structure to keep track of connected components
+        DisjointSet<WeightedGraphVertex<V, E> *> disjointSet;
+
+        // Add all vertices of the original graph to the disjoint-set
+        for (int i = 0; i < vertexCount; i++)
+        {
+            WeightedGraphVertex<V, E> *vertex = (*vertex)[i].getData();
+            disjointSet.makeSet(vertex);
+            mst->addVertex(vertex->getData());
+        }
+
+        // Create a vector to store all edges of the original graph
+        std::vector<WeightedGraphEdge<V, E> *> allEdges;
+
+        // Populate the vector with all edges
+        for (int i = 0; i < edgeCount; i++)
+        {
+            allEdges.push_back((*edge)[i].getData());
+        }
+
+        // Sort the edges by their weights in ascending order
+        std::sort(allEdges.begin(), allEdges.end(), [](WeightedGraphEdge<V, E> *a, WeightedGraphEdge<V, E> *b)
+                  { return a->getData() < b->getData(); });
+
+        // Iterate over the sorted edges and add them to the MST if they don't create a cycle
+        for (WeightedGraphEdge<V, E> *edge : allEdges)
+        {
+            WeightedGraphVertex<V, E> *u = edge->getAnotherEnd(edge->end[0]);
+            WeightedGraphVertex<V, E> *v = edge->getAnotherEnd(edge->end[1]);
+
+            // Check if adding this edge creates a cycle in the MST
+            if (disjointSet.find(u) != disjointSet.find(v))
+            {
+                // Add the edge to the MST
+                mst->addLink(u, v, edge->getData());
+
+                // Merge the two sets in the disjoint-set data structure
+                disjointSet.unionSets(u, v);
+            }
+        }
+
+        return mst;
     }
 
 private:
-    LinkList<WeightedGraphVertex<V, E> *> *vertex;
-    LinkList<WeightedGraphEdge<V, E> *> *edge;
+    std::unique_ptr<LinkList<WeightedGraphVertex<V, E> *>> vertex;
+    std::unique_ptr<LinkList<WeightedGraphEdge<V, E> *>> edge;
     int vertexCount, edgeCount;
 };
 

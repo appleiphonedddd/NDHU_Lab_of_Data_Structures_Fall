@@ -345,42 +345,49 @@ public:
     */
     bool isForest()
     {
-        // Perform depth-first search (DFS) to count connected components
-        int connectedComponents = 0;
+        // Initialize visited array
         bool *visited = new bool[count];
         for (int i = 0; i < count; i++)
-        {
             visited[i] = false;
-        }
 
+        // Check each vertex
         for (int i = 0; i < count; i++)
         {
-            if (!visited[i])
+            // If a vertex is not visited and a cycle is found starting from it, the graph is not a forest
+            if (!visited[i] && DFS(i, visited, -1))
             {
-                // Start a new DFS traversal from unvisited nodes
-                DFS(i, visited);
-                connectedComponents++;
+                delete[] visited;
+                return false; // Cycle found, not a forest
             }
         }
 
         delete[] visited;
-
-        // If there is exactly one connected component, it's a forest
-        return connectedComponents == 1;
+        return true; // No cycles found, it's a forest
     }
 
-    void DFS(int v, bool *visited)
+    // Modified DFS to check for cycles
+    bool DFS(int v, bool *visited, int parent)
     {
         visited[v] = true;
 
-        // Traverse all adjacent nodes
+        // Traverse adjacent vertices
         for (int i = 0; i < count; i++)
         {
-            if (isLinked((*vertex)[v].getData(), (*vertex)[i].getData()) && !visited[i])
+            // Check if the node is adjacent and not the parent
+            if (isLinked((*vertex)[v].getData(), (*vertex)[i].getData()))
             {
-                DFS(i, visited);
+                // If adjacent vertex is not visited, recurse on it
+                if (!visited[i])
+                {
+                    if (DFS(i, visited, v))
+                        return true;
+                }
+                // If an adjacent vertex is visited and is not the parent, a cycle is found
+                else if (i != parent)
+                    return true;
             }
         }
+        return false;
     }
 
 private:
