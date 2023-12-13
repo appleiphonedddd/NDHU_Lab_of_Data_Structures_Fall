@@ -312,9 +312,36 @@ public:
     }
     void adjMatrix()
     {
+        for(int j = 0; j < count; j++)
+        {
+            for(int k = 0; k < count; k++)
+            {
+                if(isLinked((*vertex)[j].getData(), (*vertex)[k].getData()))
+                    printf("1 ");
+                else
+                    printf("0 ");
+            }
+            std::cout << std::endl;
+        }
     }
+
     void adjList()
     {
+        ListNode <GraphNode<T> *> *cur = &(*vertex)[0];
+
+        while(cur != NULL)
+        {
+            GraphNode<T> *temp = cur->getData();
+            std::cout << temp << ": ";
+            ListNode<GraphNode<T> *> *e = (*temp)[0];
+            while(e != NULL)
+            {
+                std::cout << e->getData() << " ";
+                e = e->getNext();
+            }
+            std::cout << std::endl;
+            cur = cur->getNext();
+        }
     }
     void BFS(GraphNode<T> *node)
     {
