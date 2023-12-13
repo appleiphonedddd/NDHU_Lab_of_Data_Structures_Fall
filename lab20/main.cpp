@@ -343,7 +343,24 @@ public:
 
     void BFS(WeightedGraphVertex<V, E> *v)
     {
+        LinkList<WeightedGraphVertex<V, E> *> *l = new LinkList<WeightedGraphVertex<V, E> *>();
+        l->addFromTail(v);
+        ListNode<WeightedGraphVertex<V, E> *> *cur = l->exist(v);
 
+        while(cur != NULL)
+        {
+            std::cout << (cur) << " ";
+            ListNode<WeightedGraphEdge<V, E> *> *edge = (*(cur->getData()))[0];
+
+            while(edge != NULL)
+            {
+                if(l->exist(edge->getData()) == NULL) {
+                    l->addFromTail(edge->getData());
+                }
+                edge = edge->getNext();
+            }
+            cur = cur->getNext();
+        }
     }
 
     void DFS(WeightedGraphVertex<V, E> *v)
