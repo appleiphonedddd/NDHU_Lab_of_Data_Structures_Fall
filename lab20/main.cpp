@@ -343,55 +343,12 @@ public:
 
     void BFS(WeightedGraphVertex<V, E> *v)
     {
-        LinkList<WeightedGraphVertex<V, E> *> *queue = new LinkList<WeightedGraphVertex<V, E> *>();
-        LinkList<WeightedGraphVertex<V, E> *> *visited = new LinkList<WeightedGraphVertex<V, E> *>();
 
-        queue->addFromTail(v);
-        //visited->addFromTail(v);
-
-        while (!queue->isEmpty())
-        {
-            //v = queue->removeFromHead()->getData();
-            //1. V appears in the queue at inizialization
-            //2. x1= queue[0] = M  x1 datatype?
-            //3. visited =?
-            cout << (*v) << " ";
-
-            for (int i = 0; visited.size() != NULL; i++)
-            {
-                //WeightedGraphVertex<V, E> *u = (*v)[i]->getData()->getAnotherEnd(v);
-                if (!visited->exist(u))
-                {
-                    queue->addFromTail(u);
-                    visited->addFromTail(u);
-                }
-            }
-        }
     }
 
     void DFS(WeightedGraphVertex<V, E> *v)
     {
-        LinkList<WeightedGraphVertex<V, E> *> *stack = new LinkList<WeightedGraphVertex<V, E> *>();
-        LinkList<WeightedGraphVertex<V, E> *> *visited = new LinkList<WeightedGraphVertex<V, E> *>();
 
-        stack->addFromHead(v);
-        //visited->addFromTail(v);
-
-        while (!stack->isEmpty())
-        {
-            v = stack->removeFromHead()->getData();
-            cout << (*v) << " ";
-
-            for (int i = 0; (*v)[i] != NULL; i++)
-            {
-                WeightedGraphVertex<V, E> *u = (*v)[i]->getData()->getAnotherEnd(v);
-                if (!visited->exist(u))
-                {
-                    stack->addFromHead(u);
-                    visited->addFromTail(u);
-                }
-            }
-        }
     }
 private:
     LinkList<WeightedGraphVertex<V, E> *> *vertex;
