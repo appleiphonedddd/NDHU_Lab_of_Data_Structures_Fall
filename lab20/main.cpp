@@ -343,29 +343,30 @@ public:
 
     void BFS(WeightedGraphVertex<V, E> *v)
     {
-        LinkList<WeightedGraphVertex<V, E> *> *l = new LinkList<WeightedGraphVertex<V, E> *>();
-        l->addFromTail(v);
-        ListNode<WeightedGraphVertex<V, E> *> *cur = l->exist(v);
-
-        while(cur != NULL)
-        {
-            std::cout << (cur) << " ";
-            ListNode<WeightedGraphEdge<V, E> *> *edge = (*(cur->getData()))[0];
-
-            while(edge != NULL)
-            {
-                if(l->exist(edge->getData()) == NULL) {
-                    l->addFromTail(edge->getData());
-                }
-                edge = edge->getNext();
-            }
-            cur = cur->getNext();
-        }
+        
     }
 
     void DFS(WeightedGraphVertex<V, E> *v)
     {
-
+        stack<WeightedGraphVertex<V, E> *> w;
+        LinkList<WeightedGraphVertex<V, E> *> *visited = new LinkList<WeightedGraphVertex<V, E> *>();
+        w.push(v);
+        while (!s.empty())
+        {
+            WeightedGraphVertex<V, E> *u = w.top();
+            w.pop();
+            if (!visited->exist(u))
+            {
+                cout << u->getData() << " ";
+                visited->addFromTail(u);
+                for (int i = 0; i < u->list->count; i++)
+                {
+                    WeightedGraphVertex<V, E> *v = u->list->operator[](i)->getData()->getAnotherEnd(u);
+                    if (!visited->exist(v))
+                        w.push(v);
+                }
+            }
+        }
     }
 private:
     LinkList<WeightedGraphVertex<V, E> *> *vertex;
@@ -417,6 +418,7 @@ int main()
     g->BFS(bfsStart);
     cout << endl;
 
+    //g->DFS(dfsStart);
     g->DFS(dfsStart);
 
     return 0;

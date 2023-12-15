@@ -2,6 +2,10 @@
 #include <iostream>
 #include <stdexcept>
 #include <ctime>
+#include <queue>
+#include <map>
+
+using namespace std;
 
 template <class T>
 class Node
@@ -350,13 +354,53 @@ public:
         }
     }
 
-    WeightedGraph *shortestPathTree(WeightedGraphVertex<V, E> *v)
+    WeightedGraph *shortestPathTree(WeightedGraphVertex<V, E> *startVertex)
     {
-
         /**
          * return null if n is not a vertex in this graph
-         *return the minimum spanning tree with v as root
-         **/
+         */
+        if (startVertex == NULL)
+        {
+            return NULL;
+        }
+
+        /**
+         * return the minimum spanning tree with v as root
+         */
+        std::map<WeightedGraphVertex<V, E> *, E> distances;
+        std::priority_queue<std::pair<E, WeightedGraphVertex<V, E> *>> pq;
+        WeightedGraph *tree = new WeightedGraph();
+
+        distances[startVertex] = 0;
+        pq.push(std::make_pair(0, startVertex));
+
+        while (!pq.empty())
+        {
+            WeightedGraphVertex<V, E> *currentVertex = pq.top().second;
+            pq.pop();
+
+            ListNode<WeightedGraphEdge<V, E> *> *e = (*currentVertex)[0];
+            while (e != NULL)
+            {
+                WeightedGraphEdge<V, E> *edge = e->getData();
+                WeightedGraphVertex<V, E> *adjacentVertex = edge->getAnotherEnd(currentVertex);
+
+                // Assuming 'E' is a numeric type that represents the weight of the edge
+                E newDistance = distances[currentVertex] + edge->getData();
+
+                // If the newDistance is shorter, update the priority queue and distances map
+                if (newDistance < distances[adjacentVertex])
+                {
+                    distances[adjacentVertex] = newDistance;
+                    pq.push(std::make_pair(newDistance, adjacentVertex));
+                    // Update your tree graph accordingly
+                    // ...
+                }
+
+                e = e->getNext();
+            }
+        }
+        return tree;
     }
 
 private:
