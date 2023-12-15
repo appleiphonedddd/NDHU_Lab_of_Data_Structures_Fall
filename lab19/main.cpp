@@ -310,12 +310,17 @@ public:
             return NULL;
         }
     }
+
+    // connect the vertices in the graph
     void adjMatrix()
     {
         for(int j = 0; j < count; j++)
         {
             for(int k = 0; k < count; k++)
             {
+                /**
+                 * if the two nodes are linked, print 1 else print 0
+                */
                 if(isLinked((*vertex)[j].getData(), (*vertex)[k].getData()))
                     printf("1 ");
                 else
@@ -327,19 +332,29 @@ public:
 
     void adjList()
     {
-        ListNode <GraphNode<T> *> *cur = &(*vertex)[0];
+        ListNode <GraphNode<T> *> *cur = &(*vertex)[0]; // cur pointer to the first node
 
         while(cur != NULL)
         {
+            /**
+             * cur->getData() is the node that is pointed by cur
+            */
             GraphNode<T> *temp = cur->getData();
             std::cout << temp << ": ";
             ListNode<GraphNode<T> *> *e = (*temp)[0];
             while(e != NULL)
             {
+                /**
+                 * e->getData() is the node that is linked to temp
+                 */
                 std::cout << e->getData() << " ";
+                // move e to the next node
                 e = e->getNext();
             }
+            
             std::cout << std::endl;
+
+            // move cur to the next node
             cur = cur->getNext();
         }
     }
