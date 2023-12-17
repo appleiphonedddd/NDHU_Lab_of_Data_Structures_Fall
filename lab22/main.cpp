@@ -2,6 +2,7 @@
 #include <iostream>
 #include <stdexcept>
 #include <ctime>
+#include <queue>
 
 template <class T>
 class Node
@@ -350,6 +351,10 @@ public:
 	*/
 	WeightedGraph *minimumSpanningTree(WeightedGraphVertex<V, E> *v)
 	{
+		if(v == NULL)
+		{
+			return NULL;
+		}
 
 	}
 private:

@@ -341,33 +341,64 @@ public:
         return v;
     }
 
-    void BFS(WeightedGraphVertex<V, E> *v)
+    void BFS(WeightedGraphVertex<V, E> *startVertex)
     {
-        
-    }
+        if (!startVertex)
+            return;
 
-    void DFS(WeightedGraphVertex<V, E> *v)
-    {
-        stack<WeightedGraphVertex<V, E> *> w;
-        LinkList<WeightedGraphVertex<V, E> *> *visited = new LinkList<WeightedGraphVertex<V, E> *>();
-        w.push(v);
-        while (!s.empty())
+        std::queue<WeightedGraphVertex<V, E> *> queue;
+        std::unordered_set<WeightedGraphVertex<V, E> *> visited;
+
+        queue.push(startVertex);
+        visited.insert(startVertex);
+
+        while (!queue.empty())
         {
-            WeightedGraphVertex<V, E> *u = w.top();
-            w.pop();
-            if (!visited->exist(u))
+            WeightedGraphVertex<V, E> *current = queue.front();
+            queue.pop();
+
+            // Process current vertex
+            std::cout << current->getData() << " ";
+
+            // Iterate through adjacent vertices
+            for (int i = 0; auto edge = (*current)[i]; ++i)
             {
-                cout << u->getData() << " ";
-                visited->addFromTail(u);
-                for (int i = 0; i < u->list->count; i++)
+                WeightedGraphVertex<V, E> *adjVertex = edge->getData()->getAnotherEnd(current);
+                if (visited.find(adjVertex) == visited.end())
                 {
-                    WeightedGraphVertex<V, E> *v = u->list->operator[](i)->getData()->getAnotherEnd(u);
-                    if (!visited->exist(v))
-                        w.push(v);
+                    visited.insert(adjVertex);
+                    queue.push(adjVertex);
                 }
             }
         }
+        std::cout << std::endl;
     }
+
+    void DFSUtil(WeightedGraphVertex<V, E> *vertex, std::unordered_set<WeightedGraphVertex<V, E> *> &visited)
+    {
+        visited.insert(vertex);
+
+        // Process current vertex
+        std::cout << vertex->getData() << " ";
+
+        // Recur for all the vertices adjacent to this vertex
+        for (int i = 0; auto edge = (*vertex)[i]; ++i)
+        {
+            WeightedGraphVertex<V, E> *adjVertex = edge->getData()->getAnotherEnd(vertex);
+            if (visited.find(adjVertex) == visited.end())
+            {
+                DFSUtil(adjVertex, visited);
+            }
+        }
+    }
+
+    void DFS(WeightedGraphVertex<V, E> *startVertex)
+    {
+        std::unordered_set<WeightedGraphVertex<V, E> *> visited;
+        DFSUtil(startVertex, visited);
+        std::cout << std::endl;
+    }
+
 private:
     LinkList<WeightedGraphVertex<V, E> *> *vertex;
     LinkList<WeightedGraphEdge<V, E> *> *edge;
