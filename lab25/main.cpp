@@ -240,28 +240,29 @@ public:
     };
     Hash()
     {
-        int j;
-        for(j = 0;j < 100;j ++)
-            table[j] = new LinkList<Pair *>();
+    	secondTable = NULL;
     }
     bool insert(Pair *data)
     {
         unsigned int k = HASHfunction(data->key);
-        table[k]->addFromTail(data);
+        if(table[k] == NULL)
+            table[k] = data;
+        else
+        {
+        	if(secondTable == NULL)
+            	secondTable = new(nothrow) HASH<T1, T2>();
+            if(secondTable == NULL)
+                return false;
+            secondTable->insert(data);
+        }
         return true;
     }
     Pair *search(T1 key)
     {
-        unsigned int k = HASHfunction(key);
-        LinkList<Pair *> *list = table[k];
-        ListNode<Pair *> *j = list->exist(new Pair {key, ""});
-        if(j)
-            return j->getData();
-        else
-            cout << "miss" << endl;
     }
 private:
     Pair *table[100];
+    Hash *secondTable;
     unsigned int HASHfunction(T1 k)
     {
         unsigned int size = sizeof(T1);
@@ -283,7 +284,7 @@ int main()
 {
     int j;
     Hash<int, string> *hash = new Hash<int, string>();
-    for(j = 1000;j < 1024;j ++)
+    for(j = 0;j < 1024;j ++)
     {
         Hash<int, string>::Pair *p = new Hash<int, string>::Pair {j, to_string(j)};
         hash->insert(p);
