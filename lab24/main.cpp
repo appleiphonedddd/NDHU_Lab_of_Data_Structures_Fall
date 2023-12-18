@@ -194,6 +194,9 @@ public:
         }
         return NULL;
     }
+    ListNode<T>* getHead() const {
+        return head;
+    }
     bool exist(ListNode<T> *n)
     {
         ListNode<T> *j = head;
@@ -252,14 +255,17 @@ public:
     }
     Pair *search(T1 key)
     {
-        unsigned int k = HASHfunction(key);
-        LinkList<Pair *> *list = table[k];
-        ListNode<Pair *> *j = list->exist(new Pair {key, ""});
-        if(j)
-            return j->getData();
-        else
-            cout << "miss" << endl;
+        unsigned int index = HASHfunction(key);
+        ListNode<Pair*> *current = table[index]->getHead(); // Use getHead() method
+        while (current != NULL) {
+            if (current->getData()->key == key) {
+                return current->getData();
+            }
+            current = current->getNext();
+        }
+        return NULL; // Return NULL if key not found
     }
+    
 private:
     LinkList<Pair *> *table[100];
     unsigned int HASHfunction(T1 k)
