@@ -375,30 +375,40 @@ public:
         std::cout << std::endl;
     }
 
-    void DFSUtil(WeightedGraphVertex<V, E> *vertex, std::unordered_set<WeightedGraphVertex<V, E> *> &visited)
+void DFS(WeightedGraphVertex<V, E> *startVertex)
+{
+    if (!startVertex)
+        return;
+
+    std::stack<WeightedGraphVertex<V, E> *> stack;
+    std::unordered_set<WeightedGraphVertex<V, E> *> visited;
+
+    stack.push(startVertex);
+
+    while (!stack.empty())
     {
-        visited.insert(vertex);
+        WeightedGraphVertex<V, E> *vertex = stack.top();
+        stack.pop();
 
-        // Process current vertex
-        std::cout << vertex->getData() << " ";
-
-        // Recur for all the vertices adjacent to this vertex
-        for (int i = 0; auto edge = (*vertex)[i]; ++i)
+        // If the vertex is not visited, process it and mark as visited
+        if (visited.find(vertex) == visited.end())
         {
-            WeightedGraphVertex<V, E> *adjVertex = edge->getData()->getAnotherEnd(vertex);
-            if (visited.find(adjVertex) == visited.end())
+            std::cout << vertex->getData() << " ";
+            visited.insert(vertex);
+
+            // Push all adjacent vertices that are not visited
+            for (int i = 0; auto edge = (*vertex)[i]; ++i)
             {
-                DFSUtil(adjVertex, visited);
+                WeightedGraphVertex<V, E> *adjVertex = edge->getData()->getAnotherEnd(vertex);
+                //if (visited.find(adjVertex) == visited.end())
+                //{
+                    stack.push(adjVertex);
+                //}
             }
         }
     }
-
-    void DFS(WeightedGraphVertex<V, E> *startVertex)
-    {
-        std::unordered_set<WeightedGraphVertex<V, E> *> visited;
-        DFSUtil(startVertex, visited);
-        std::cout << std::endl;
-    }
+    std::cout << std::endl;
+}
 
 private:
     LinkList<WeightedGraphVertex<V, E> *> *vertex;
