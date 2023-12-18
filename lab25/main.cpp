@@ -252,6 +252,13 @@ public:
     }
     Pair *search(T1 key)
     {
+        unsigned int k = HASHfunction(key);
+        LinkList<Pair *> *list = table[k];
+        ListNode<Pair *> *j = list->exist(new Pair {key, ""});
+        if(j)
+            return j->getData();
+        else
+            cout << "miss" << endl;
     }
 private:
     Pair *table[100];
