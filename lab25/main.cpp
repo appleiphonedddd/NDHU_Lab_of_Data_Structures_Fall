@@ -250,7 +250,7 @@ public:
         else
         {
         	if(secondTable == NULL)
-            	secondTable = new(nothrow) HASH<T1, T2>();
+                secondTable = new(nothrow) Hash<T1, T2>();
             if(secondTable == NULL)
                 return false;
             secondTable->insert(data);
@@ -259,6 +259,20 @@ public:
     }
     Pair *search(T1 key)
     {
+        unsigned int k = HASHfunction(key);
+  
+        // Check primary hash table
+        if(table[k] != NULL && table[k]->key == key) {
+            return table[k]; 
+        }
+  
+        // Check secondary table if collision
+        if(secondTable != NULL) {
+            return secondTable->search(key);
+        }
+  
+         // Key not found
+        return NULL; 
     }
 private:
     Pair *table[100];

@@ -266,6 +266,7 @@ public:
         return NULL; // Return NULL if key not found
     }
     
+
 private:
     LinkList<Pair *> *table[100];
     unsigned int HASHfunction(T1 k)
