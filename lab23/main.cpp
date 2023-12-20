@@ -4,6 +4,7 @@
 #include <ctime>
 #include <queue>
 #include <map>
+#include <limits>
 
 using namespace std;
 
@@ -354,53 +355,74 @@ public:
         }
     }
 
-    WeightedGraph *shortestPathTree(WeightedGraphVertex<V, E> *startVertex)
+    WeightedGraph<V, E> *shortestPathTree(WeightedGraphVertex<V, E> *startVertex)
     {
-        /**
-         * return null if n is not a vertex in this graph
-         */
-        if (startVertex == NULL)
+        if (startVertex == nullptr)
         {
-            return NULL;
+            return nullptr;
         }
 
-        /**
-         * return the minimum spanning tree with v as root
-         */
-        std::map<WeightedGraphVertex<V, E> *, E> distances;
-        std::priority_queue<std::pair<E, WeightedGraphVertex<V, E> *>> pq;
-        WeightedGraph *tree = new WeightedGraph();
+        // Create a new graph to represent the shortest path tree.
+        WeightedGraph<V, E> *shortestTree = new WeightedGraph<V, E>();
 
-        distances[startVertex] = 0;
+        // Create a map to store the minimum distance from the start vertex to each vertex.
+        std::map<WeightedGraphVertex<V, E> *, E> minDistance;
+
+        // Initialize distances to all vertices as infinity (except for the start vertex).
+        for (auto vertexIter = vertex->begin(); vertexIter != vertex->end(); ++vertexIter)
+        {
+            for (auto vertexIter = vertex->begin(); vertexIter != vertex->end(); ++vertexIter)
+            {
+                auto vertex = *vertexIter;
+                // Rest of the loop logic here
+                if (vertex == startVertex)
+                {
+                    minDistance[vertex] = 0;
+                }
+                else
+                {
+                    minDistance[vertex] = std::numeric_limits<E>::max();
+                }
+            }
+
+        }
+
+        // Create a priority queue to select the next vertex to process.
+        std::priority_queue<std::pair<E, WeightedGraphVertex<V, E> *>> pq;
+
+        // Add the start vertex with distance 0 to the priority queue.
         pq.push(std::make_pair(0, startVertex));
 
         while (!pq.empty())
         {
+            // Get the vertex with the minimum distance from the priority queue.
             WeightedGraphVertex<V, E> *currentVertex = pq.top().second;
+            E currentDistance = pq.top().first;
             pq.pop();
 
-            ListNode<WeightedGraphEdge<V, E> *> *e = (*currentVertex)[0];
-            while (e != NULL)
+            // Add the current vertex to the shortest path tree.
+            shortestTree->addVertex(currentVertex->getData());
+
+            // Relaxation: Update the distances to neighboring vertices.
+            for (auto edgeNode : *currentVertex)
             {
-                WeightedGraphEdge<V, E> *edge = e->getData();
-                WeightedGraphVertex<V, E> *adjacentVertex = edge->getAnotherEnd(currentVertex);
+                WeightedGraphEdge<V, E> *edge = edgeNode->getData();
+                WeightedGraphVertex<V, E> *neighbor = edge->getAnotherEnd(currentVertex);
+                E edgeWeight = edge->getData();
 
-                // Assuming 'E' is a numeric type that represents the weight of the edge
-                E newDistance = distances[currentVertex] + edge->getData();
-
-                // If the newDistance is shorter, update the priority queue and distances map
-                if (newDistance < distances[adjacentVertex])
+                // Check if a shorter path to the neighbor is found.
+                if (currentDistance + edgeWeight < minDistance[neighbor])
                 {
-                    distances[adjacentVertex] = newDistance;
-                    pq.push(std::make_pair(newDistance, adjacentVertex));
-                    // Update your tree graph accordingly
-                    // ...
-                }
+                    minDistance[neighbor] = currentDistance + edgeWeight;
+                    pq.push(std::make_pair(minDistance[neighbor], neighbor));
 
-                e = e->getNext();
+                    // Add the edge to the shortest path tree.
+                    shortestTree->addLink(currentVertex, neighbor, edgeWeight);
+                }
             }
         }
-        return tree;
+
+        return shortestTree;
     }
 
 private:

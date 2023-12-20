@@ -3,6 +3,7 @@
 #include <stdexcept>
 #include <ctime>
 #include <queue>
+#include <unordered_set>
 
 template <class T>
 class Node
@@ -206,11 +207,19 @@ public:
 	ListNode<T> &operator[](int i)
 	{
 		ListNode<T> *j = head;
-		int k;
-		for(k = 0;k < i && j != NULL;k ++)
+		int k = 0; // Initialize a counter to track the current index
+
+		while (j != nullptr && k < i)
+		{
 			j = j->getNext();
-		if(j == NULL)
-			throw std::invalid_argument("index does not exist.");
+			k++;
+		}
+
+		if (j == nullptr)
+		{
+			throw std::invalid_argument("Index does not exist.");
+		}
+
 		return *j;
 	}
 	void print() const
@@ -349,14 +358,63 @@ public:
         return null if n is not a vertex in this graph
         return the minimum spanning tree with v as root
 	*/
-	WeightedGraph *minimumSpanningTree(WeightedGraphVertex<V, E> *v)
+	WeightedGraph<V, E> *minimumSpanningTree(WeightedGraphVertex<V, E> *v)
 	{
-		if(v == NULL)
+		if (v == nullptr)
 		{
-			return NULL;
+			return nullptr;
 		}
 
+		WeightedGraph<V, E> *minimumSpanningTree = new WeightedGraph<V, E>(); // Create an empty graph for the MST
+		std::priority_queue<std::pair<E, WeightedGraphEdge<V, E> *>> pq;	  // Priority queue to store edges sorted by weight
+
+		// Create a set to keep track of visited vertices
+		std::unordered_set<WeightedGraphVertex<V, E> *> visitedVertices;
+
+		// Initialize with the starting vertex
+		visitedVertices.insert(v);
+
+		// Add all edges connected to the starting vertex to the priority queue
+		for (ListNode<WeightedGraphEdge<V, E> *> *edgeNode = (*v)[0]; edgeNode != nullptr; edgeNode = edgeNode->getNext())
+		{
+			pq.push({edgeNode->getData()->getData(), edgeNode->getData()});
+		}
+
+		// Continue until we have added (V-1) edges to the MST
+		while (minimumSpanningTree->vertexCount < (vertexCount - 1))
+		{
+			if (pq.empty())
+			{
+				// The graph is not connected.
+				break;
+			}
+
+			// Get the edge with the minimum weight from the priority queue
+			E weight = pq.top().first;
+			WeightedGraphEdge<V, E> *edge = pq.top().second;
+			pq.pop();
+
+			WeightedGraphVertex<V, E> *vertex1 = edge->getAnotherEnd(v);
+
+			if (visitedVertices.count(vertex1) == 0)
+			{
+				// Add the edge to the MST
+				minimumSpanningTree->addLink(v, vertex1, weight);
+
+				// Mark the other end as visited
+				visitedVertices.insert(vertex1);
+
+				// Add edges connected to the new vertex to the priority queue
+				for (ListNode<WeightedGraphEdge<V, E> *> *edgeNode = (*vertex1)[0]; edgeNode != nullptr; edgeNode = edgeNode->getNext())
+				{
+					pq.push({edgeNode->getData()->getData(), edgeNode->getData()});
+				}
+			}
+		}
+
+		return minimumSpanningTree;
 	}
+
 private:
 	LinkList<WeightedGraphVertex<V, E> *> *vertex;
 	LinkList<WeightedGraphEdge<V, E> *> *edge;
