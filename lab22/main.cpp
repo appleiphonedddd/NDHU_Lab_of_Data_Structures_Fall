@@ -442,4 +442,5 @@ int main()
 	tree = g->minimumSpanningTree((*g)[0]);
 	tree->adjList();
 	return 0;
+	
 }
