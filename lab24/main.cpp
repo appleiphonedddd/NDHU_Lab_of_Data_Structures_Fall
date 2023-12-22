@@ -256,7 +256,11 @@ public:
     Pair *search(T1 key)
     {
         unsigned int index = HASHfunction(key);
-        ListNode<Pair*> *current = table[index]->getHead(); // Use getHead() method
+        /**
+         * Using linked list to deal with collision
+         */
+        ListNode<Pair*> *current = table[index]->getHead();
+        
         while (current != NULL) {
             if (current->getData()->key == key) {
                 return current->getData();
