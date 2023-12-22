@@ -30,6 +30,5 @@ cd NDHU_Lab_of_Data_Structures_2023
 Complie c code and execute it!
 
 ```shell!
-g++ /file to main.cpp -o main -Wall
-main
+complie.sh main.c
 ```
