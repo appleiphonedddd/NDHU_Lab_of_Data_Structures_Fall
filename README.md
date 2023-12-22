@@ -30,5 +30,5 @@ cd NDHU_Lab_of_Data_Structures_2023
 Complie c code and execute it!
 
 ```shell!
-complie.sh main.c
+./complie.sh main.c
 ```
