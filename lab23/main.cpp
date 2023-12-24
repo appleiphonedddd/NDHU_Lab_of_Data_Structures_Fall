@@ -373,6 +373,7 @@ template <class V, class E>
 
 WeightedGraph<V, E> *WeightedGraph<V, E>::shortestPathTree(WeightedGraphVertex<V, E> *startVertex)
 {
+    // Use Dijkstra's algorithm to find the shortest path tree
     if (startVertex == nullptr)
     {
         return nullptr;
