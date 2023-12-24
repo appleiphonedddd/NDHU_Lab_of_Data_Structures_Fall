@@ -11,7 +11,7 @@ source_file="$1"
 file_name="${source_file%.*}"
 
 # Compile the C code to create an executable
-gcc -o "$file_name" "$source_file"
+g++ -o "$file_name" "$source_file"
 
 # Check if the compilation was successful
 if [ $? -eq 0 ]; then
