@@ -360,6 +360,7 @@ public:
 	*/
 	WeightedGraph<V, E> *minimumSpanningTree(WeightedGraphVertex<V, E> *v)
 	{
+		// using Prim's algorithm
 		if (v == nullptr)
 		{
 			return nullptr;
