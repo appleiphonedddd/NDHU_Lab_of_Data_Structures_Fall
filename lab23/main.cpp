@@ -5,6 +5,7 @@
 #include <queue>
 #include <map>
 #include <limits>
+#include <vector>
 
 using namespace std;
 
@@ -158,6 +159,10 @@ public:
             n->setNext(NULL);
         }
         return n;
+    }
+    ListNode<T> *getHead() const
+    {
+        return head;
     }
     ListNode<T> *removeFromTail()
     {
@@ -355,80 +360,105 @@ public:
         }
     }
 
-    WeightedGraph<V, E> *shortestPathTree(WeightedGraphVertex<V, E> *startVertex)
-    {
-        if (startVertex == nullptr)
-        {
-            return nullptr;
-        }
-
-        // Create a new graph to represent the shortest path tree.
-        WeightedGraph<V, E> *shortestTree = new WeightedGraph<V, E>();
-
-        // Create a map to store the minimum distance from the start vertex to each vertex.
-        std::map<WeightedGraphVertex<V, E> *, E> minDistance;
-
-        // Initialize distances to all vertices as infinity (except for the start vertex).
-        for (auto vertexIter = vertex->begin(); vertexIter != vertex->end(); ++vertexIter)
-        {
-            for (auto vertexIter = vertex->begin(); vertexIter != vertex->end(); ++vertexIter)
-            {
-                auto vertex = *vertexIter;
-                // Rest of the loop logic here
-                if (vertex == startVertex)
-                {
-                    minDistance[vertex] = 0;
-                }
-                else
-                {
-                    minDistance[vertex] = std::numeric_limits<E>::max();
-                }
-            }
-
-        }
-
-        // Create a priority queue to select the next vertex to process.
-        std::priority_queue<std::pair<E, WeightedGraphVertex<V, E> *>> pq;
-
-        // Add the start vertex with distance 0 to the priority queue.
-        pq.push(std::make_pair(0, startVertex));
-
-        while (!pq.empty())
-        {
-            // Get the vertex with the minimum distance from the priority queue.
-            WeightedGraphVertex<V, E> *currentVertex = pq.top().second;
-            E currentDistance = pq.top().first;
-            pq.pop();
-
-            // Add the current vertex to the shortest path tree.
-            shortestTree->addVertex(currentVertex->getData());
-
-            // Relaxation: Update the distances to neighboring vertices.
-            for (auto edgeNode : *currentVertex)
-            {
-                WeightedGraphEdge<V, E> *edge = edgeNode->getData();
-                WeightedGraphVertex<V, E> *neighbor = edge->getAnotherEnd(currentVertex);
-                E edgeWeight = edge->getData();
-
-                // Check if a shorter path to the neighbor is found.
-                if (currentDistance + edgeWeight < minDistance[neighbor])
-                {
-                    minDistance[neighbor] = currentDistance + edgeWeight;
-                    pq.push(std::make_pair(minDistance[neighbor], neighbor));
-
-                    // Add the edge to the shortest path tree.
-                    shortestTree->addLink(currentVertex, neighbor, edgeWeight);
-                }
-            }
-        }
-
-        return shortestTree;
-    }
+    WeightedGraph<V, E> *shortestPathTree(WeightedGraphVertex<V, E> *startVertex);
+    WeightedGraphVertex<V, E> *exist(V data);
 
 private:
     LinkList<WeightedGraphVertex<V, E> *> *vertex;
     LinkList<WeightedGraphEdge<V, E> *> *edge;
     int vertexCount, edgeCount;
+};
+
+template <class V, class E>
+
+WeightedGraph<V, E> *WeightedGraph<V, E>::shortestPathTree(WeightedGraphVertex<V, E> *startVertex)
+{
+    if (startVertex == nullptr)
+    {
+        return nullptr;
+    }
+
+    // Map to store the shortest distance to each vertex
+    std::map<WeightedGraphVertex<V, E> *, E> distances;
+
+    // Map to store the parent of each vertex in the path
+    std::map<WeightedGraphVertex<V, E> *, WeightedGraphVertex<V, E> *> parents;
+
+    // Initialize distances to infinity
+    ListNode<WeightedGraphVertex<V, E> *> *cur = vertex->getHead();
+    while (cur != NULL)
+    {
+        distances[cur->getData()] = std::numeric_limits<E>::max();
+        cur = cur->getNext();
+    }
+
+    // Priority queue to select the vertex with the minimum distance
+    std::priority_queue<std::pair<E, WeightedGraphVertex<V, E> *>,
+                        std::vector<std::pair<E, WeightedGraphVertex<V, E> *>>,
+                        std::greater<std::pair<E, WeightedGraphVertex<V, E> *>>>
+        pq;
+
+    // Start with the source vertex
+    distances[startVertex] = 0;
+    pq.push(std::make_pair(0, startVertex));
+
+    while (!pq.empty())
+    {
+        WeightedGraphVertex<V, E> *u = pq.top().second;
+        pq.pop();
+
+        // Explore the neighbors of u
+        ListNode<WeightedGraphEdge<V, E> *> *edgeNode = (*u)[0];
+        while (edgeNode != NULL)
+        {
+            WeightedGraphEdge<V, E> *edge = edgeNode->getData();
+            WeightedGraphVertex<V, E> *v = edge->getAnotherEnd(u);
+
+            // Check if a shorter path to v exists
+            E weight = edge->getData();
+            if (distances[u] + weight < distances[v])
+            {
+                distances[v] = distances[u] + weight;
+                parents[v] = u;
+                pq.push(std::make_pair(distances[v], v));
+            }
+
+            edgeNode = edgeNode->getNext();
+        }
+    }
+
+    // Create a new graph to represent the shortest path tree
+    WeightedGraph<V, E> *tree = new WeightedGraph<V, E>();
+
+    // Add vertices
+    for (auto &p : parents)
+    {
+        tree->addVertex(p.first->getData());
+    }
+
+    // Add edges according to the parent map
+    for (auto &p : parents)
+    {
+        if (p.second != nullptr) // Ensure the vertex is not the start vertex
+        {
+            tree->addLink(tree->exist(p.second->getData()), tree->exist(p.first->getData()), distances[p.first]);
+        }
+    }
+
+    return tree;
+}
+
+template <class V, class E>
+WeightedGraphVertex<V, E> *WeightedGraph<V, E>::exist(V data)
+{
+    ListNode<WeightedGraphVertex<V, E> *> *current = vertex->getHead();
+    while (current != nullptr)
+    {
+        if (current->getData()->getData() == data)
+            return current->getData();
+        current = current->getNext();
+    }
+    return nullptr;
 };
 
 int main()
