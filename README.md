@@ -39,28 +39,28 @@
  
 ## Contents
 
-- [Getting Started](#Getting Started)
-  - [Requirements](#开发前的配置要求)
+- [Getting_Started](#GettingStarted)
+  - [Requirements](#Requirements)
   - [Installation](#Installation)
-- [Directory Structure](#文件目录说明)
-- [Development Architecture](#开发的架构)
-- [Deployment](#部署)
-- [Frameworks Used](#使用到的框架)
+- [Directory_Structure](#DirectoryStructure)
+- [Development Architecture](#DevelopmentArchitecture)
+- [Deployment](#Deployment)
+- [Frameworks_Used](#FrameworksUsed)
 - [Author](#Author)
 
 
-### 上手指南
+### Getting Started
 
 请将所有链接中的“shaojintian/Best_README_template”改为“your_github_name/your_repository”
 
 
 
-###### 开发前的配置要求
+###### Requirements
 
 1. xxxxx x.x.x
 2. xxxxx x.x.x
 
-###### **安装步骤**
+###### **Installation**
 
 1. Get a free API Key at [https://example.com](https://example.com)
 2. Clone the repo
@@ -69,7 +69,7 @@
 git clone https://github.com/shaojintian/Best_README_template.git
 ```
 
-### 文件目录说明
+### Directory Structure
 eg:
 
 ```
@@ -92,56 +92,27 @@ filetree
 
 ```
 
-
-
-
-
-### 开发的架构 
+### Development Architecture
 
 请阅读[ARCHITECTURE.md](https://github.com/shaojintian/Best_README_template/blob/master/ARCHITECTURE.md) 查阅为该项目的架构。
 
-### 部署
+### Deployment
 
 暂无
 
-### 使用到的框架
+### Frameworks Used
 
 - [xxxxxxx](https://getbootstrap.com)
 - [xxxxxxx](https://jquery.com)
 - [xxxxxxx](https://laravel.com)
 
-### 贡献者
-
-请阅读**CONTRIBUTING.md** 查阅为该项目做出贡献的开发者。
-
-#### 如何参与开源项目
-
-贡献使开源社区成为一个学习、激励和创造的绝佳场所。你所作的任何贡献都是**非常感谢**的。
-
-
-1. Fork the Project
-2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the Branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
-
-
-### 版本控制
-
-该项目使用Git进行版本管理。您可以在repository参看当前可用版本。
-
 ### Author
 
 zozo5120@outlook.com
 
-姓名:xxxx 
+Name:xxxx 
 
-### 版权说明
-
-该项目签署了MIT 授权许可，详情请参阅 [LICENSE.txt](https://github.com/shaojintian/Best_README_template/blob/master/LICENSE.txt)
-
-### 鸣谢
+### Acknowledgements
 
 
 - [GitHub Emoji Cheat Sheet](https://www.webpagefx.com/tools/emoji-cheat-sheet)
