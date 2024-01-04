@@ -42,7 +42,7 @@
 - [Getting_Started](#GettingStarted)
   - [Requirements](#Requirements)
   - [Installation](#Installation)
-- [Directory_Structure](#DirectoryStructure)
+- [Directory_Structure](#Directory_Structure)
 - [Development Architecture](#DevelopmentArchitecture)
 - [Deployment](#Deployment)
 - [Frameworks_Used](#FrameworksUsed)
@@ -69,7 +69,7 @@
 git clone https://github.com/shaojintian/Best_README_template.git
 ```
 
-### Directory Structure
+### Directory_Structure
 eg:
 
 ```
