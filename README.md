@@ -43,7 +43,7 @@
   - [Requirements](#Requirements)
   - [Installation](#Installation)
 - [Directory_Structure](#Directory_Structure)
-- [Development Architecture](#DevelopmentArchitecture)
+- [Development_Architecture](#Development_Architecture)
 - [Deployment](#Deployment)
 - [Frameworks_Used](#FrameworksUsed)
 - [Author](#Author)
@@ -92,7 +92,7 @@ filetree
 
 ```
 
-### Development Architecture
+### Development_Architecture
 
 请阅读[ARCHITECTURE.md](https://github.com/shaojintian/Best_README_template/blob/master/ARCHITECTURE.md) 查阅为该项目的架构。
 
