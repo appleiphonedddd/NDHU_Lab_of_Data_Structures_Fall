@@ -66,7 +66,7 @@
 2. Clone the repo
 
 ```sh
-git clone https://github.com/shaojintian/Best_README_template.git
+git clone https://github.com/appleiphonedddd/NDHU_Lab_of_Data_Structures_2023.git
 ```
 
 ### Directory_Structure
@@ -94,7 +94,7 @@ filetree
 
 ### Development_Architecture
 
-请阅读[ARCHITECTURE.md](https://github.com/shaojintian/Best_README_template/blob/master/ARCHITECTURE.md) 查阅为该项目的架构。
+Please read[ARCHITECTURE.md](https://github.com/shaojintian/Best_README_template/blob/master/ARCHITECTURE.md)  to view the architecture for this project
 
 ### Deployment
 
