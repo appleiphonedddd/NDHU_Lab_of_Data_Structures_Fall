@@ -46,10 +46,7 @@
 - [Development Architecture](#开发的架构)
 - [Deployment](#部署)
 - [Frameworks Used](#使用到的框架)
-- [Contributors](#贡献者)
-  - [如何参与开源项目](#如何参与开源项目)
-- [版本控制](#版本控制)
-- [Author](#作者)
+- [Author](#Author)
 
 
 ### 上手指南
@@ -134,13 +131,11 @@ filetree
 
 该项目使用Git进行版本管理。您可以在repository参看当前可用版本。
 
-### 作者
+### Author
 
-xxx@xxxx
+zozo5120@outlook.com
 
-知乎:xxxx  &ensp; qq:xxxxxx    
-
- *您也可以在贡献者名单中参看所有参与该项目的开发者。*
+姓名:xxxx 
 
 ### 版权说明
 
