@@ -39,7 +39,7 @@
  
 ## Contents
 
-- [上手指南](#上手指南)
+- [Getting Started](#Getting Started)
   - [Requirements](#开发前的配置要求)
   - [安装步骤](#安装步骤)
 - [文件目录说明](#文件目录说明)
