@@ -17,28 +17,29 @@ void allocArray(int ***p, int m, int n)
         exit(1);
     }
 
-    // Make sure 2-D array refer continue memory space
+    // Make sure 2-D array refer to continuous memory space
     for(int i = 0; i < m; i++) {
-        temp[i] = data + 1 * n;
+        temp[i] = data + i * n; // Corrected the memory offset here
     }
     *p = temp;
 }
 
 int main()
 {
-  int **array, *s;
+  int **array;
   int j, k;
   allocArray(&array, 5, 10);
 
-  // Print memory address
+  // Assigning values and printing memory address
   for(j = 0; j < 5; j++) {
     for(k = 0; k < 10; k++) {
        array[j][k] = j * 10 + k;
     }
-    for(j = 0;j < 5;j ++) {
-        for(k = 0;k < 10;k ++) {
-            printf("%p ", &(array[j][k]));
-        }
+  }
+  // Fixed the loop for printing the addresses outside the assignment loop
+  for(j = 0; j < 5; j++) {
+    for(k = 0; k < 10; k++) {
+        printf("%p ", &(array[j][k]));
     }
     printf("\n");
   }
